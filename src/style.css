@@ -1,0 +1,737 @@
+:root {
+  --bg-dark: #07050d;
+  --bg-card: rgba(18, 14, 28, 0.85);
+  --bg-card-border: rgba(212, 175, 55, 0.25);
+  
+  --gold-primary: #d4af37;
+  --gold-light: #fbe38e;
+  --gold-glow: rgba(230, 185, 75, 0.45);
+  --gold-dark: #8c6d1f;
+
+  --magic-purple: #9b51e0;
+  --magic-blue: #2f80ed;
+  
+  --font-magic: 'Cinzel', serif;
+  --font-serif: 'Cormorant Garamond', serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --btn-size: clamp(240px, 45vw, 320px);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-dark);
+  color: #f0e6d2;
+  font-family: var(--font-sans);
+  background-image: 
+    radial-gradient(circle at 50% 25%, rgba(68, 36, 110, 0.28) 0%, transparent 65%),
+    radial-gradient(circle at 50% 85%, rgba(180, 120, 30, 0.12) 0%, transparent 55%),
+    radial-gradient(circle at 10% 50%, rgba(25, 15, 45, 0.5) 0%, transparent 50%),
+    radial-gradient(circle at 90% 50%, rgba(25, 15, 45, 0.5) 0%, transparent 50%);
+  background-attachment: fixed;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background Particle Canvas */
+#magic-particles-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Vignette overlay */
+.vignette-overlay {
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.85);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Main Container (Single-Screen Mobile First) */
+.ceremony-container {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  max-width: 580px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: env(safe-area-inset-top, 16px) 20px env(safe-area-inset-bottom, 20px) 20px;
+}
+
+/* Top Bar: Title & Counter */
+.top-bar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+}
+
+.ceremony-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(22, 17, 34, 0.65);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 6px 14px;
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+  font-size: 0.82rem;
+  color: #dec891;
+  letter-spacing: 0.5px;
+}
+
+.ceremony-badge .badge-icon {
+  color: var(--gold-light);
+  font-size: 0.95rem;
+}
+
+.counter-value {
+  color: #fff;
+  font-weight: 600;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon-btn {
+  background: rgba(22, 17, 34, 0.65);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  color: #dec891;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+
+.icon-btn:hover {
+  background: rgba(212, 175, 55, 0.2);
+  border-color: var(--gold-primary);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+/* Center Stage Area */
+.stage-area {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  min-height: 0;
+}
+
+.title-group {
+  text-align: center;
+}
+
+.app-main-title {
+  font-family: var(--font-magic);
+  font-size: clamp(1.4rem, 4.5vw, 1.9rem);
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, #fff7d6 0%, #e5c365 45%, #9e7922 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 25px rgba(212, 175, 55, 0.35);
+  margin-bottom: 2px;
+}
+
+.app-sub-title {
+  font-family: var(--font-serif);
+  font-size: clamp(0.95rem, 3.2vw, 1.15rem);
+  color: #bfa980;
+  font-style: italic;
+  letter-spacing: 1px;
+}
+
+/* Sorting Hat SVG & Halo */
+.hat-container {
+  width: 100%;
+  max-width: 310px;
+  height: clamp(180px, 32vh, 250px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.sorting-hat-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform 0.1s cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+.sorting-hat-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.8));
+  overflow: visible;
+}
+
+.hat-magic-halo {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.2) 0%, transparent 70%);
+  animation: haloBreathe 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes haloBreathe {
+  0%, 100% { transform: scale(0.95); opacity: 0.3; }
+  50% { transform: scale(1.15); opacity: 0.7; }
+}
+
+.audio-pulse-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  pointer-events: none;
+  opacity: 0;
+  width: 180px;
+  height: 180px;
+}
+
+.is-playing .audio-pulse-ring.ring-1 {
+  animation: pulseWave 2.2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}
+
+.is-playing .audio-pulse-ring.ring-2 {
+  animation: pulseWave 2.2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite 1.1s;
+}
+
+@keyframes pulseWave {
+  0% { transform: scale(0.7); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* Status Banner / Ritual Narration */
+.ritual-status-card {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--bg-card-border);
+  border-radius: 16px;
+  padding: 12px 18px;
+  backdrop-filter: blur(12px);
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  min-height: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+.ritual-status-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 25%;
+  right: 25%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+}
+
+.ritual-step-tag {
+  font-family: var(--font-magic);
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  color: var(--gold-light);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ritual-message {
+  font-family: var(--font-serif);
+  font-size: clamp(1.05rem, 3.5vw, 1.25rem);
+  color: #f7eed9;
+  line-height: 1.3;
+  transition: opacity 0.3s ease;
+}
+
+/* Ritual Progress Track Dots (5 Steps) */
+.progress-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.step-dot.active {
+  background: var(--gold-light);
+  box-shadow: 0 0 10px var(--gold-primary), 0 0 16px var(--gold-light);
+  transform: scale(1.4);
+}
+
+.step-dot.completed {
+  background: var(--gold-dark);
+  border-color: var(--gold-primary);
+}
+
+/* ==========================================================================
+   2. ELEMENTO CENTRAL: O BOTÃO PRINCIPAL ("Colocar o Chapéu" / "Sortear")
+   ========================================================================== */
+.action-zone {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 8px;
+}
+
+/* The Big Magical Sorting Button */
+.main-sorting-button {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  height: clamp(74px, 11vh, 88px);
+  background: linear-gradient(135deg, #1f162c 0%, #150e20 50%, #0d0815 100%);
+  border: none;
+  border-radius: 44px;
+  cursor: pointer;
+  outline: none;
+  overflow: visible;
+  padding: 0;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(212, 175, 55, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15);
+}
+
+/* Button Inner Gold Filigree Border */
+.btn-gold-border {
+  position: absolute;
+  inset: 4px;
+  border-radius: 40px;
+  border: 1.5px solid rgba(212, 175, 55, 0.5);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+/* Golden Aura / Pulse Light */
+.btn-aura-glow {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.35) 0%, transparent 70%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 0;
+}
+
+/* Button Content Layout */
+.btn-content-box {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.btn-primary-label {
+  font-family: var(--font-magic);
+  font-size: clamp(1.05rem, 3.8vw, 1.3rem);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, #ffffff 0%, #fae29c 60%, #cf9c34 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+}
+
+.btn-secondary-label {
+  font-family: var(--font-serif);
+  font-size: clamp(0.78rem, 2.6vw, 0.88rem);
+  color: #bfa980;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   ESTADO 1: DISPONÍVEL (Pulsante e Interativo)
+   -------------------------------------------------------------------------- */
+.main-sorting-button.state-available {
+  cursor: pointer;
+  animation: buttonBreathe 3s ease-in-out infinite;
+}
+
+.main-sorting-button.state-available .btn-aura-glow {
+  opacity: 1;
+  animation: auraPulse 3s ease-in-out infinite;
+}
+
+.main-sorting-button.state-available:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.7),
+    0 0 25px rgba(212, 175, 55, 0.5),
+    0 0 0 2px rgba(245, 218, 126, 0.7);
+}
+
+.main-sorting-button.state-available:active {
+  transform: translateY(2px) scale(0.98);
+}
+
+@keyframes buttonBreathe {
+  0%, 100% {
+    box-shadow: 
+      0 10px 25px rgba(0, 0, 0, 0.6),
+      0 0 15px rgba(212, 175, 55, 0.3),
+      0 0 0 1px rgba(212, 175, 55, 0.4);
+  }
+  50% {
+    box-shadow: 
+      0 12px 30px rgba(0, 0, 0, 0.7),
+      0 0 28px rgba(212, 175, 55, 0.55),
+      0 0 0 2px rgba(245, 218, 126, 0.6);
+  }
+}
+
+@keyframes auraPulse {
+  0%, 100% { transform: scale(0.98); opacity: 0.3; }
+  50% { transform: scale(1.08); opacity: 0.75; }
+}
+
+/* --------------------------------------------------------------------------
+   ESTADO 2: REPRODUZINDO (Visual Desativado com Indicador Animado de Seleção)
+   -------------------------------------------------------------------------- */
+.main-sorting-button.state-playing {
+  cursor: not-allowed;
+  pointer-events: none;
+  background: linear-gradient(135deg, #150f1d 0%, #0d0812 100%);
+  box-shadow: 
+    0 8px 20px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(160, 130, 60, 0.25);
+  animation: none;
+}
+
+.main-sorting-button.state-playing .btn-gold-border {
+  border-color: rgba(212, 175, 55, 0.2);
+}
+
+.main-sorting-button.state-playing .btn-aura-glow {
+  opacity: 0.15;
+}
+
+.main-sorting-button.state-playing .btn-primary-label {
+  background: linear-gradient(180deg, #d8cca8 0%, #a89467 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: clamp(0.95rem, 3.5vw, 1.15rem);
+}
+
+/* Spinner / Rune Orbits inside the button when playing */
+.playing-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(212, 175, 55, 0.25);
+  border-top-color: var(--gold-light);
+  border-radius: 50%;
+  animation: spinRune 1s linear infinite;
+  margin-right: 6px;
+}
+
+@keyframes spinRune {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Audio wave equalizer bar under button label */
+.equalizer-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 16px;
+  margin-top: 4px;
+}
+
+.eq-bar {
+  width: 3px;
+  background: var(--gold-light);
+  border-radius: 2px;
+  animation: eqJump 0.8s ease-in-out infinite alternate;
+}
+
+.eq-bar:nth-child(1) { height: 6px; animation-delay: 0.1s; }
+.eq-bar:nth-child(2) { height: 14px; animation-delay: 0.25s; }
+.eq-bar:nth-child(3) { height: 10px; animation-delay: 0.05s; }
+.eq-bar:nth-child(4) { height: 16px; animation-delay: 0.35s; }
+.eq-bar:nth-child(5) { height: 8px; animation-delay: 0.18s; }
+
+@keyframes eqJump {
+  0% { transform: scaleY(0.4); opacity: 0.5; }
+  100% { transform: scaleY(1.2); opacity: 1; }
+}
+
+/* ==========================================================================
+   HOUSE REVEAL BANNER / CONFETTI HIGHLIGHT
+   ========================================================================== */
+.house-reveal-banner {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%) scale(0.85);
+  background: rgba(14, 10, 22, 0.95);
+  border: 2px solid var(--gold-primary);
+  border-radius: 24px;
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 50px rgba(212, 175, 55, 0.4);
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.house-reveal-banner.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) scale(1);
+}
+
+.house-reveal-crest {
+  width: 70px;
+  height: 70px;
+  margin-bottom: 12px;
+}
+
+.house-reveal-name {
+  font-family: var(--font-magic);
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: var(--gold-light);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+/* ==========================================================================
+   SETTINGS / DIAGNOSTIC MODAL DRAWER
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  padding: 20px;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 440px;
+  background: #110c1c;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  padding-bottom: 12px;
+}
+
+.modal-title {
+  font-family: var(--font-magic);
+  color: var(--gold-light);
+  font-size: 1.15rem;
+  letter-spacing: 1px;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  color: #dec891;
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.setting-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.setting-label {
+  font-size: 0.88rem;
+  color: #d8cca8;
+  display: flex;
+  justify-content: space-between;
+}
+
+.setting-control {
+  display: flex;
+  gap: 8px;
+}
+
+.engine-option-btn {
+  flex: 1;
+  background: rgba(25, 18, 38, 0.8);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: #dec891;
+  padding: 10px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.engine-option-btn.active {
+  background: rgba(212, 175, 55, 0.25);
+  border-color: var(--gold-light);
+  color: #fff;
+  font-weight: 600;
+}
+
+.volume-slider {
+  width: 100%;
+  accent-color: var(--gold-primary);
+  cursor: pointer;
+}
+
+.asset-diagnostics-box {
+  background: rgba(8, 5, 14, 0.6);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 0.78rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.diag-item {
+  display: flex;
+  justify-content: space-between;
+  color: #baa780;
+}
+
+.diag-status {
+  font-weight: 600;
+  color: #4cd964;
+}
+
+.btn-secondary {
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: #f7eed9;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.btn-secondary:hover {
+  background: rgba(212, 175, 55, 0.25);
+}
+
+/* Mobile responsive fine-tuning */
+@media (max-height: 680px) {
+  .hat-container {
+    height: 160px;
+  }
+  .ritual-status-card {
+    min-height: 58px;
+    padding: 8px 14px;
+  }
+  .app-main-title {
+    font-size: 1.3rem;
+  }
+  .main-sorting-button {
+    height: 68px;
+  }
+}
